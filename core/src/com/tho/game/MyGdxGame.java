@@ -13,12 +13,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.Iterator;
-import java.util.Vector;
 
 public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -58,7 +56,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		objOrthographicCamera = new OrthographicCamera();
 		objOrthographicCamera.setToOrtho(false, 1280, 768);
 
-		
+
 
 		//Setup BitMapFont
 		nameBitmapFont = new BitmapFont();

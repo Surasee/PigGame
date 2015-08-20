@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -27,9 +28,11 @@ public class MyGdxGame extends ApplicationAdapter {
 	private Rectangle frogRectangle, coinsRectangle;
 	private OrthographicCamera objOrthographicCamera;
 	private Vector3 objVector3;
-	private BitmapFont nameBitmapFont;
-	private int xcloudAnInt, ycloudAnInt = 570, driection = 1;
+	private BitmapFont nameBitmapFont, scoreBitmapFont, playBitmapFont;
+	private int xcloudAnInt, ycloudAnInt = 570, driection = 1, scoreAnInt;
 	private boolean cloudABoolean = true;
+
+
 
 	private Array<Rectangle> objCoinsDrop;
 	private long lastDorpTime;
@@ -55,11 +58,16 @@ public class MyGdxGame extends ApplicationAdapter {
 		objOrthographicCamera = new OrthographicCamera();
 		objOrthographicCamera.setToOrtho(false, 1280, 768);
 
+		
 
 		//Setup BitMapFont
 		nameBitmapFont = new BitmapFont();
 		nameBitmapFont.setColor(Color.BLACK);
 		nameBitmapFont.setScale(4);
+
+		scoreBitmapFont = new BitmapFont();
+		scoreBitmapFont.setColor(Color.YELLOW);
+		scoreBitmapFont.setScale(3);
 
 
 
@@ -107,21 +115,35 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		//Draw Object
 		batch.begin();
+
 		//draw BG
 		batch.draw(bgTexture, 0, 0);
-		//Drawable Font
-		nameBitmapFont.draw(batch, "Coin's Frog By Tho", 50, 720);
-		//drawable cloud
-		batch.draw(imgCloud, xcloudAnInt, ycloudAnInt);
+
 		//Frog
 		batch.draw(imgFrog, frogRectangle.x, frogRectangle.y);
+
 		//Coins
-		for(Rectangle forRectangle : objCoinsDrop)
-		{
+		for(Rectangle forRectangle : objCoinsDrop){
 			batch.draw(imgCoins,forRectangle.x,forRectangle.y);
 		}// for
 
+		//drawable cloud
+		batch.draw(imgCloud, xcloudAnInt, ycloudAnInt);
+
+		//Drawable Font
+		nameBitmapFont.draw(batch, "Coin's Frog By Tho", 50, 720);
+
+		//Score
+		scoreBitmapFont.draw(batch, "Your Score = "+scoreAnInt, 50, 70);
+
+
+
+		// End Draw
 		batch.end();
+
+
+
+
 
 		//Active Frog
 		activeTouch();
@@ -146,6 +168,7 @@ public class MyGdxGame extends ApplicationAdapter {
 			}//if
 			if(objMyCoins.overlaps(frogRectangle))
 			{
+				scoreAnInt++;
 				successSound.play();
 				objIterator.remove();
 			}

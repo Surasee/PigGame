@@ -10,9 +10,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.Iterator;
 import java.util.Vector;
@@ -21,13 +23,14 @@ public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
 	private Texture bgTexture, imgFrog, imgCoins, imgPig, imgCloud;
 	private Music musicBackground;
-	private Sound frogSound;
-	private Rectangle frogRectangle;
+	private Sound frogSound, successSound, falseSound;
+	private Rectangle frogRectangle, coinsRectangle;
 	private OrthographicCamera objOrthographicCamera;
 	private Vector3 objVector3;
 	private BitmapFont nameBitmapFont;
 	private int xcloudAnInt, ycloudAnInt = 570, driection = 1;
 	private boolean cloudABoolean = true;
+
 	private Array<Rectangle> objCoinsDrop;
 	private long lastDorpTime;
 	private Iterator<Rectangle> objIterator;
@@ -67,6 +70,10 @@ public class MyGdxGame extends ApplicationAdapter {
 		frogRectangle.width = 100;
 		frogRectangle.height = 75;
 
+		//Create CoinsDorp
+		objCoinsDrop = new Array<Rectangle>();
+		gameCoinsDrop();
+
 
 
 		//set Music
@@ -76,8 +83,12 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		//set frog sound
 		frogSound = Gdx.audio.newSound(Gdx.files.internal("frog.wav"));
+		successSound = Gdx.audio.newSound(Gdx.files.internal("coins_drop.wav"));
+		falseSound = Gdx.audio.newSound(Gdx.files.internal("water_drop.wav"));
 
 	}
+
+
 
 	@Override
 	public void render () {
@@ -96,23 +107,19 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		//Draw Object
 		batch.begin();
-
 		//draw BG
 		batch.draw(bgTexture, 0, 0);
+		//Drawable Font
+		nameBitmapFont.draw(batch, "Coin's Frog By Tho", 50, 720);
 		//drawable cloud
 		batch.draw(imgCloud, xcloudAnInt, ycloudAnInt);
-
-
-
-		//Drawable Font
-
-		nameBitmapFont.draw(batch, "Coin's Frog", 50, 720);
-
-
 		//Frog
 		batch.draw(imgFrog, frogRectangle.x, frogRectangle.y);
-
-
+		//Coins
+		for(Rectangle forRectangle : objCoinsDrop)
+		{
+			batch.draw(imgCoins,forRectangle.x,forRectangle.y);
+		}// for
 
 		batch.end();
 
@@ -122,6 +129,29 @@ public class MyGdxGame extends ApplicationAdapter {
 		//move cloud
 		moveCloud();
 
+		//Check Time End of Drop
+		if (TimeUtils.nanoTime() - lastDorpTime > 1E9)
+		{
+			gameCoinsDrop();
+		}
+		objIterator = objCoinsDrop.iterator();
+		while (objIterator.hasNext()){
+			Rectangle objMyCoins = objIterator.next();
+			objMyCoins.y -= 200*Gdx.graphics.getDeltaTime();
+
+			if(objMyCoins.y + 64 < 0)
+			{
+				falseSound.play();
+				objIterator.remove();
+			}//if
+			if(objMyCoins.overlaps(frogRectangle))
+			{
+				successSound.play();
+				objIterator.remove();
+			}
+		}//while
+
+		//moveCoins();
 
 
 
@@ -159,6 +189,18 @@ public class MyGdxGame extends ApplicationAdapter {
 		}
 		xcloudAnInt += 200 * Gdx.graphics.getDeltaTime() * driection;
 	}
+
+	private void gameCoinsDrop() {
+
+		coinsRectangle = new Rectangle();
+		coinsRectangle.x = MathUtils.random(0, 1226);
+		coinsRectangle.y = 570;
+		coinsRectangle.width = 64;
+		coinsRectangle.height = 64;
+		objCoinsDrop.add(coinsRectangle);
+		lastDorpTime = TimeUtils.nanoTime();
+
+	}//game coins drop
 
 /*
 	private void moveCloud() {

@@ -183,8 +183,6 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	private void activeTouch() {
 
-
-
 		if (Gdx.input.isTouched()) {
 
 			frogSound.play();
@@ -192,7 +190,7 @@ public class MyGdxGame extends ApplicationAdapter {
 			objVector3.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 
 			//Control Screen
-			if (objVector3.x < 590) {
+			if (objVector3.x < Gdx.graphics.getWidth()/2) { // <<<<<<<<half Display
 				frogRectangle.x -= (frogRectangle.x<0)?0:10;
 			} else {
 				frogRectangle.x += (frogRectangle.x>1180)?0:10;
